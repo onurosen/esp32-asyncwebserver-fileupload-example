@@ -6,14 +6,14 @@ const char index_html[] PROGMEM = R"rawliteral(
   <meta charset="UTF-8">
 </head>
 <body>
-  <p>Main page</p>
-  <p>Firmware: %FIRMWARE%</p>
-  <p>Free Storage: <span id="freespiffs">%FREESPIFFS%</span> | Used Storage: <span id="usedspiffs">%USEDSPIFFS%</span> | Total Storage: <span id="totalspiffs">%TOTALSPIFFS%</span></p>
+  <p>Anasayfa</p>
+  <p>Yazılım Sürümü: %FIRMWARE%</p>
+  <p>Boş Depolama: <span id="freespiffs">%FREESPIFFS%</span> | Kullanılan Depolama: <span id="usedspiffs">%USEDSPIFFS%</span> | Toplam depolama: <span id="totalspiffs">%TOTALSPIFFS%</span></p>
   <p>
-  <button onclick="logoutButton()">Logout</button>
-  <button onclick="rebootButton()">Reboot</button>
-  <button onclick="listFilesButton()">List Files</button>
-  <button onclick="showUploadButtonFancy()">Upload File</button>
+  <button onclick="logoutButton()">Çıkış Yap</button>
+  <button onclick="rebootButton()">Yeniden Başlat</button>
+  <button onclick="listFilesButton()">Dosyaları Listele</button>
+  <button onclick="showUploadButtonFancy()">Dosya Yükle</button>
   </p>
   <p id="status"></p>
   <p id="detailsheader"></p>
@@ -90,7 +90,7 @@ function progressHandler(event) {
   _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes";
   var percent = (event.loaded / event.total) * 100;
   _("progressBar").value = Math.round(percent);
-  _("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
+  _("status").innerHTML = Math.round(percent) + "% yükleniyor... Lütfen bekleyin";
   if (percent >= 100) {
     _("status").innerHTML = "Please wait, writing file to filesystem";
   }
@@ -138,7 +138,7 @@ const char reboot_html[] PROGMEM = R"rawliteral(
 </head>
 <body>
 <h3>
-  Rebooting, returning to main page in <span id="countdown">30</span> seconds
+  Yeniden başlatılıyor, <span id="countdown">30</span> saniye içinde Anasayfaya yönlendirileceksiniz.
 </h3>
 <script type="text/javascript">
   var seconds = 20;
