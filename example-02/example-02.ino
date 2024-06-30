@@ -32,25 +32,25 @@ String listFiles(bool ishtml = false);
 void setup() {
   Serial.begin(115200);
 
-  Serial.print("Firmware: "); Serial.println(FIRMWARE_VERSION);
+  Serial.print("Yazılım Versiyon: "); Serial.println(FIRMWARE_VERSION);
 
-  Serial.println("Booting ...");
+  Serial.println("Boot ediliyor ...");
 
-  Serial.println("Mounting SPIFFS ...");
+  Serial.println("SPIFFS Bağlanıyor ...");
   if (!SPIFFS.begin(true)) {
     // if you have not used SPIFFS before on a ESP32, it will show this error.
     // after a reboot SPIFFS will be configured and will happily work.
-    Serial.println("ERROR: Cannot mount SPIFFS, Rebooting");
-    rebootESP("ERROR: Cannot mount SPIFFS, Rebooting");
+    Serial.println("Hata: SPIFFS bağlananadı, Yeniden Boot ediliyor...");
+    rebootESP("ERROR: Cannot mount SPIFFS bağlanamadı, Yeniden Boot ediliyor...");
   }
 
-  Serial.print("SPIFFS Free: "); Serial.println(humanReadableSize((SPIFFS.totalBytes() - SPIFFS.usedBytes())));
-  Serial.print("SPIFFS Used: "); Serial.println(humanReadableSize(SPIFFS.usedBytes()));
-  Serial.print("SPIFFS Total: "); Serial.println(humanReadableSize(SPIFFS.totalBytes()));
+  Serial.print("SPIFFS Boş alan: "); Serial.println(humanReadableSize((SPIFFS.totalBytes() - SPIFFS.usedBytes())));
+  Serial.print("SPIFFS Kullanılan alan: "); Serial.println(humanReadableSize(SPIFFS.usedBytes()));
+  Serial.print("SPIFFS Toplam alan: "); Serial.println(humanReadableSize(SPIFFS.totalBytes()));
 
   Serial.println(listFiles());
 
-  Serial.println("Loading Configuration ...");
+  Serial.println("Konfigürasyon yükleniyor ...");
 
   config.ssid = default_ssid;
   config.wifipassword = default_wifipassword;
@@ -58,53 +58,53 @@ void setup() {
   config.httppassword = default_httppassword;
   config.webserverporthttp = default_webserverporthttp;
 
-  Serial.print("\nConnecting to Wifi: ");
+  Serial.print("\nWifi ağına bağlanılıyor: ");
   WiFi.begin(config.ssid.c_str(), config.wifipassword.c_str());
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
 
-  Serial.println("\n\nNetwork Configuration:");
+  Serial.println("\n\nAğ Konfigürasyonu:");
   Serial.println("----------------------");
-  Serial.print("         SSID: "); Serial.println(WiFi.SSID());
-  Serial.print("  Wifi Status: "); Serial.println(WiFi.status());
-  Serial.print("Wifi Strength: "); Serial.print(WiFi.RSSI()); Serial.println(" dBm");
-  Serial.print("          MAC: "); Serial.println(WiFi.macAddress());
-  Serial.print("           IP: "); Serial.println(WiFi.localIP());
-  Serial.print("       Subnet: "); Serial.println(WiFi.subnetMask());
-  Serial.print("      Gateway: "); Serial.println(WiFi.gatewayIP());
-  Serial.print("        DNS 1: "); Serial.println(WiFi.dnsIP(0));
-  Serial.print("        DNS 2: "); Serial.println(WiFi.dnsIP(1));
-  Serial.print("        DNS 3: "); Serial.println(WiFi.dnsIP(2));
+  Serial.print("            SSID: "); Serial.println(WiFi.SSID());
+  Serial.print("     Wifi Durumu: "); Serial.println(WiFi.status());
+  Serial.print("Wifi Sinyal Gücü: "); Serial.print(WiFi.RSSI()); Serial.println(" dBm");
+  Serial.print("             MAC: "); Serial.println(WiFi.macAddress());
+  Serial.print("              IP: "); Serial.println(WiFi.localIP());
+  Serial.print("          Subnet: "); Serial.println(WiFi.subnetMask());
+  Serial.print("       Ağ Geçidi: "); Serial.println(WiFi.gatewayIP());
+  Serial.print("           DNS 1: "); Serial.println(WiFi.dnsIP(0));
+  Serial.print("           DNS 2: "); Serial.println(WiFi.dnsIP(1));
+  Serial.print("           DNS 3: "); Serial.println(WiFi.dnsIP(2));
   Serial.println();
 
   // configure web server
-  Serial.println("Configuring Webserver ...");
+  Serial.println("Web Server konfigüre ediliyor ...");
   server = new AsyncWebServer(config.webserverporthttp);
   configureWebServer();
 
   // startup web server
-  Serial.println("Starting Webserver ...");
+  Serial.println("Web Server başlatılıyor ...");
   server->begin();
 }
 
 void loop() {
   // reboot if we've told it to reboot
   if (shouldReboot) {
-    rebootESP("Web Admin Initiated Reboot");
+    rebootESP("Web Yöneticisi Tarafından Yeniden Başlatma");
   }
 }
 
 void rebootESP(String message) {
-  Serial.print("Rebooting ESP32: "); Serial.println(message);
+  Serial.print("ESP32 yeniden başlatılıyor: "); Serial.println(message);
   ESP.restart();
 }
 
 // list all of the files, if ishtml=true, return html rather than simple text
 String listFiles(bool ishtml) {
   String returnText = "";
-  Serial.println("Listing files stored on SPIFFS");
+  Serial.println("SPIFFS'te depolanan dosyaları listeleme");
   File root = SPIFFS.open("/");
   File foundfile = root.openNextFile();
   if (ishtml) {
@@ -116,7 +116,7 @@ String listFiles(bool ishtml) {
       returnText += "<td><button onclick=\"downloadDeleteButton(\'" + String(foundfile.name()) + "\', \'download\')\">Download</button>";
       returnText += "<td><button onclick=\"downloadDeleteButton(\'" + String(foundfile.name()) + "\', \'delete\')\">Delete</button></tr>";
     } else {
-      returnText += "File: " + String(foundfile.name()) + " Size: " + humanReadableSize(foundfile.size()) + "\n";
+      returnText += "Dosya: " + String(foundfile.name()) + " Boyut: " + humanReadableSize(foundfile.size()) + "\n";
     }
     foundfile = root.openNextFile();
   }
